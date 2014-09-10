@@ -20,8 +20,8 @@ def get_device(path):
 
 
 def replace_line(path, key, value):
-    pattern = r"{}(\s*):(\s*)(?:[^#\s]*)(.*)".format(key)
-    replacement = r"{}\1:\2{}\3".format(key, value)
+    print("Replacing:", key, "->", value, "in", path)
+    pattern = r"{key}( *):( *)(?:[^#\s]*)(.*)".format(key=key)
 
     with open(path) as fd:
         lines = list(fd)
@@ -29,10 +29,10 @@ def replace_line(path, key, value):
     for i, line in enumerate(lines):
         match = re.match(pattern, line)
         if match is not None:
-            lines[i] = match.expand(replacement) + "\n"
+            lines[i] = "{key}{0}:{1}{value}{2}\n".format(*match.groups(), key=key, value=value)
             break
     else:
-        lines.append("{}: '{}'\n".format(key, value))
+        lines.append("{}: {}\n".format(key, value))
 
     with open(path, "w") as fd:
         for line in lines:
