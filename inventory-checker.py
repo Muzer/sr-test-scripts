@@ -29,7 +29,7 @@ def replace_line(path, key, value):
     for i, line in enumerate(lines):
         match = re.match(pattern, line)
         if match is not None:
-            lines[i] = match.expand(replacement)
+            lines[i] = match.expand(replacement) + "\n"
             break
     else:
         lines.append("{}: '{}'\n".format(key, value))
