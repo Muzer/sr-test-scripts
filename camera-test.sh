@@ -38,9 +38,11 @@ while true; do
     fi
   fi
   ./inventory-checker.py "$1" "$INVENTORY" "$working"
+  echo "PLEASE REMOVE WEBCAM"
   while [ -f "$1" ]; do
     sleep 0.1
   done
+  echo "PLEASE INSERT NEXT WEBCAM"
   while ! [ -f "$1" ]; do
     sleep 0.1
   done
