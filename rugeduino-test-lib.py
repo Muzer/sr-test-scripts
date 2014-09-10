@@ -30,6 +30,18 @@ def readpin(pinid):
 	return ser.readline()			#read output
 
 '''
+ reads the analogue on a pin
+
+ \param pinid pin to read
+'''
+def analoguereadpin(pinid):
+#	print "a"+chr(ord('a')+pinid)		#debug print			
+	ser.write("a"+chr(ord('a')+pinid))	#send read command
+	ser.flush()				#flush serial
+	return int(ser.readline())		#read output
+
+
+'''
 Mapping of pin pairs on test harness
 '''
 pinmap = {
@@ -54,6 +66,16 @@ pinmap = {
 19:16,
 }
 
+analoguepins = {
+
+14:0,
+15:1,
+16:2,
+17:3,
+18:4,
+19:5,
+}
+
 '''
  * Performs a test sequence on a pin
  * 
@@ -73,6 +95,9 @@ def testpin(pinid):
 		teststatus=False		#fail test
 	if (not checkremainingpins(pinid)):	#look for efects on other pins
 		teststatus=False		#fail test
+	if pinmap[pinid] in analoguepins:	#if anolouge pin
+		if analoguereadpin(analoguepins[pinmap[pinid]]) < 950:
+			print "Error analogue pin ("+str(analoguepins[pinmap[pinid]])+") did not read max value read:"+str(analoguereadpin(analoguepins[pinmap[pinid]]))
 
 	setpin("low",pinid);		#set pin low
 
@@ -81,6 +106,9 @@ def testpin(pinid):
 		teststatus=False		#fail test
 	if (not checkremainingpins(pinid)):	#look for efects on other pins
 		teststatus=False		#fail test
+	if pinmap[pinid] in analoguepins:	#if anolouge pin
+		if analoguereadpin(analoguepins[pinmap[pinid]]) > 10:
+			print "Error analogue pin ("+str(analoguepins[pinmap[pinid]])+") did not read min value read:"+str(analoguereadpin(analoguepins[pinmap[pinid]]))
 
 	setpin("input_pullup",pinid)		#return testpin to normal
 	setpin("input_pullup",pinmap[pinid])	#return testpin pair to normal
