@@ -37,7 +37,7 @@ while true; do
       condition=broken
     fi
   fi
-  ./inventory-checker.py "$device" "$INVENTORY" "$working"
+  ./inventory-checker.py "$1" "$INVENTORY" "$working"
   while [ -f "$1" ]; do
     sleep 0.1
   done
