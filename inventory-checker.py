@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 from __future__ import print_function
 
+import re
 import os
 import sys
 
@@ -18,36 +19,48 @@ def get_device(path):
     return pyudev.Device.from_device_file(context, path)
 
 
-def replace_serial_line(path, new_serial):
-    lines = []
+def replace_line(path, key, value):
+    pattern = r"{}(\s*):(\s*)(?:[^#\s]*)(.*)".format(key)
+    replacement = r"{}\1:\2{}\3".format(key, value)
 
     with open(path) as fd:
-        for line in fd:
-            lines.append(line)
+        lines = list(fd)
 
     for i, line in enumerate(lines):
-        if line.startswith("serial:"):
-            lines[i] = "serial: '{}'\n".format(new_serial)
+        match = re.match(pattern, line)
+        if match is not None:
+            lines[i] = match.expand(replacement)
             break
     else:
-        lines.append("serial: '{}'\n".format(new_serial))
+        lines.append("{}: '{}'\n".format(key, value))
 
     with open(path, "w") as fd:
-        fd.write("".join(lines))
+        for line in lines:
+            fd.write(line)
 
 
-def update_device_serial(new_serial):
+def replace_condition(path, new_condition):
+    replace_line(path, "condition", new_condition)
+
+
+def replace_serial(path, new_serial):
+    replace_line(path, "serial", new_serial)
+
+
+def update_device(new_serial, new_condition):
     while True:
         code = raw_input("Asset code: ")
         result = inventory.query.query("code:{}".format(code), inv=inv.root)
         if result:
             item = result[0]
-            replace_serial_line(item.path, new_serial)
+            replace_serial(item.path, new_serial)
+            replace_condition(item.path, new_condition)
+            return
         else:
             print("COULD NOT FIND THE DEVICE!")
 
 
-def test_device(device, inv):
+def test_device(device, inv, condition):
     print("=" * 80)
     serial_number = device["ID_SERIAL_SHORT"]
     result = inventory.query.query("serial:{}".format(serial_number), inv=inv.root)
@@ -58,13 +71,15 @@ def test_device(device, inv):
         print()
         yes = raw_input("Is this correct? [Y/n] ")
         if yes.lower() == "n":
-            replace_serial_line(item.path, "")
+            replace_serial(item.path, "")
             update_device_serial(serial_number)
+        else:
+            replace_condition(item.path, condition)
     else:
-        update_device_serial(serial_number)
+        update_device(serial_number, condition)
 
 
 if __name__ == "__main__":
     device = get_device(sys.argv[1])
     inv = inventory.Inventory(sys.argv[2])
-    test_device(device, inv)
+    test_device(device, inv, sys.argv[3])
