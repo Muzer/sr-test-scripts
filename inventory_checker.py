@@ -47,7 +47,7 @@ def replace_serial(path, new_serial):
     replace_line(path, "serial", new_serial)
 
 
-def update_device(new_serial, new_condition):
+def update_device(new_serial, new_condition, inv):
     while True:
         code = raw_input("Asset code: ")
         result = inventory.query.query("code:{}".format(code), inv=inv.root)
@@ -60,9 +60,10 @@ def update_device(new_serial, new_condition):
             print("COULD NOT FIND THE DEVICE!")
 
 
-def test_device(device, inv, condition):
+def test_device(device, inv_directory, condition):
     print("=" * 80)
     serial_number = device["ID_SERIAL_SHORT"]
+    inv = inventory.Inventory(inv_directory)
     result = inventory.query.query("serial:{}".format(serial_number), inv=inv.root)
     if result:
         item = result[0]
@@ -72,14 +73,13 @@ def test_device(device, inv, condition):
         yes = raw_input("Is this correct? [Y/n] ")
         if yes.lower() == "n":
             replace_serial(item.path, "")
-            update_device_serial(serial_number)
+            update_device(serial_number, condition, inv)
         else:
             replace_condition(item.path, condition)
     else:
-        update_device(serial_number, condition)
+        update_device(serial_number, condition, inv)
 
 
 if __name__ == "__main__":
     device = get_device(sys.argv[1])
-    inv = inventory.Inventory(sys.argv[2])
-    test_device(device, inv, sys.argv[3])
+    test_device(device, sys.argv[2], sys.argv[3])

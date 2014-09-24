@@ -37,7 +37,7 @@ while true; do
       condition=broken
     fi
   fi
-  ./inventory-checker.py "$1" "$INVENTORY" "$condition"
+  ./inventory_checker.py "$1" "$INVENTORY" "$condition"
   echo "PLEASE REMOVE WEBCAM"
   while [ -e "$1" ]; do
     sleep 0.1
