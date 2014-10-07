@@ -29,7 +29,8 @@ def replace_line(path, key, value):
     for i, line in enumerate(lines):
         match = re.match(pattern, line)
         if match is not None:
-            lines[i] = "{key}{0}:{1}{value}{2}\n".format(*match.groups(), key=key, value=value)
+            lines[i] = "{key}{0}:{1}{value}{2}\n".format(*match.groups(),
+                                                         key=key, value=value)
             break
     else:
         lines.append("{}: {}\n".format(key, value))
@@ -64,7 +65,8 @@ def test_device(device, inv_directory, condition):
     print("=" * 80)
     serial_number = device["ID_SERIAL_SHORT"]
     inv = inventory.Inventory(inv_directory)
-    result = inventory.query.query("serial:{}".format(serial_number), inv=inv.root)
+    result = inventory.query.query("serial:{}".format(serial_number),
+                                   inv=inv.root)
     if result:
         item = result[0]
         print(item.description)
