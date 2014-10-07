@@ -83,5 +83,8 @@ def test_device(device, inv_directory, condition):
 
 
 if __name__ == "__main__":
-    device = get_device(sys.argv[1])
-    test_device(device, sys.argv[2], sys.argv[3])
+    device_path = sys.argv[1]
+    inventory_directory = sys.argv[2]
+    condition = sys.argv[3]
+    device = get_device(device_path)
+    test_device(device, inventory_directory, condition)
