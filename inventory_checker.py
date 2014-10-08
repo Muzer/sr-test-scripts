@@ -65,7 +65,7 @@ def test_device(device, inv_directory, condition):
     print("=" * 80)
     serial_number = device["ID_SERIAL_SHORT"]
     inv = inventory.Inventory(inv_directory)
-    result = inventory.query.query("serial:{}".format(serial_number),
+    result = inventory.query.query("serial:\"{}\"".format(serial_number),
                                    inv=inv.root)
     if result:
         item = result[0]
