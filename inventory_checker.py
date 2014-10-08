@@ -4,6 +4,7 @@ from __future__ import print_function
 import re
 import os
 import sys
+import argparse
 
 import pyudev
 import yaml
@@ -12,7 +13,6 @@ sys.path.append(os.getenv("HOME") + "/.sr/tools/python")
 sys.path.append(os.getenv("HOME") + "/.sr/tools/python/inventory")
 
 import inventory.query
-
 
 def get_device(path):
     context = pyudev.Context()
@@ -83,8 +83,11 @@ def test_device(device, inv_directory, condition):
 
 
 if __name__ == "__main__":
-    device_path = sys.argv[1]
-    inventory_directory = sys.argv[2]
-    condition = sys.argv[3]
-    device = get_device(device_path)
-    test_device(device, inventory_directory, condition)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('device_path', type=str)
+    parser.add_argument('inventory_directory', type=str)
+    parser.add_argument('condition', type=str)
+    args = parser.parse_args()
+
+    device = get_device(args.device_path)
+    test_device(args.device, args.inventory_directory, args.condition)
