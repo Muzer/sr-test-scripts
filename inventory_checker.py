@@ -63,7 +63,7 @@ def update_device(new_serial, new_condition, inv):
 
 def test_device(device, inv_directory, condition):
     print("=" * 80)
-    serial_number = '"' + device["ID_SERIAL_SHORT"] + '"'
+    serial_number = device["ID_SERIAL_SHORT"]
     inv = inventory.Inventory(inv_directory)
     result = inventory.query.query("serial:{}".format(serial_number),
                                    inv=inv.root)
@@ -75,7 +75,7 @@ def test_device(device, inv_directory, condition):
         yes = raw_input("Is this correct? [Y/n] ")
         if yes.lower() == "n":
             replace_serial(item.path, "")
-            update_device(serial_number, condition, inv)
+            update_device('"' + serial_number + '"', condition, inv)
         else:
             replace_condition(item.path, condition)
     else:
