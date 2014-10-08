@@ -4,6 +4,7 @@ from __future__ import print_function
 import re
 import os
 import sys
+import argparse
 
 import pyudev
 import yaml
@@ -12,40 +13,11 @@ sys.path.append(os.getenv("HOME") + "/.sr/tools/python")
 sys.path.append(os.getenv("HOME") + "/.sr/tools/python/inventory")
 
 import inventory.query
-
+from yaml_replace import *
 
 def get_device(path):
     context = pyudev.Context()
     return pyudev.Device.from_device_file(context, path)
-
-
-def replace_line(path, key, value):
-    print("Replacing:", key, "->", value, "in", path)
-    pattern = r"{key}( *):( *)(?:[^#\s]*)(.*)".format(key=key)
-
-    with open(path) as fd:
-        lines = list(fd)
-
-    for i, line in enumerate(lines):
-        match = re.match(pattern, line)
-        if match is not None:
-            lines[i] = "{key}{0}:{1}{value}{2}\n".format(*match.groups(),
-                                                         key=key, value=value)
-            break
-    else:
-        lines.append("{}: {}\n".format(key, value))
-
-    with open(path, "w") as fd:
-        for line in lines:
-            fd.write(line)
-
-
-def replace_condition(path, new_condition):
-    replace_line(path, "condition", new_condition)
-
-
-def replace_serial(path, new_serial):
-    replace_line(path, "serial", new_serial)
 
 
 def update_device(new_serial, new_condition, inv):
@@ -83,8 +55,11 @@ def test_device(device, inv_directory, condition):
 
 
 if __name__ == "__main__":
-    device_path = sys.argv[1]
-    inventory_directory = sys.argv[2]
-    condition = sys.argv[3]
-    device = get_device(device_path)
-    test_device(device, inventory_directory, condition)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('device_path', type=str)
+    parser.add_argument('inventory_directory', type=str)
+    parser.add_argument('condition', type=str)
+    args = parser.parse_args()
+
+    device = get_device(args.device_path)
+    test_device(args.device, args.inventory_directory, args.condition)
