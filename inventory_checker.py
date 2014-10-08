@@ -75,7 +75,7 @@ def test_device(device, inv_directory, condition):
         yes = raw_input("Is this correct? [Y/n] ")
         if yes.lower() == "n":
             replace_serial(item.path, "")
-            update_device(serial_number, condition, inv)
+            update_device('"' + serial_number + '"', condition, inv)
         else:
             replace_condition(item.path, condition)
     else:

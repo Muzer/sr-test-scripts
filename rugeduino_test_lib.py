@@ -96,7 +96,7 @@ def testpin(pinid):
 	if (not checkremainingpins(pinid)):	#look for efects on other pins
 		teststatus=False		#fail test
 	if pinmap[pinid] in analoguepins:	#if anolouge pin
-		if analoguereadpin(analoguepins[pinmap[pinid]]) < 950:
+		if analoguereadpin(analoguepins[pinmap[pinid]]) < 940:
 			print "Error analogue pin ("+str(analoguepins[pinmap[pinid]])+") did not read max value read:"+str(analoguereadpin(analoguepins[pinmap[pinid]]))
 
 	setpin("low",pinid);		#set pin low
@@ -153,6 +153,16 @@ def runtest(port='/dev/ttyACM0'):
 	for pin in pinmap:			# for every pin
 		if not testpin(pin):		#test that pin
 			tsetstatus=False	#fail the test
+
+	raw_input("Switch to Anolouge test shield and press enter to continue.")
+
+	for pin in analoguepins:		#for each anolouge pin
+		value = analoguereadpin(analoguepins[pinmap[pin]])
+		if value < 670 or value > 680:
+			print "Error analogue pin ("+str(analoguepins[pinmap[pin]])+") did not read 3.3v value read:"+str(analoguereadpin(analoguepins[pinmap[pin]]))
+			teststatus=False	#test has failed
+
+
 
 	ser.close()				#close serial port
 	return teststatus
