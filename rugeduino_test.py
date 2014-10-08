@@ -3,8 +3,13 @@
 
 from rugeduino_test_lib import *
 from inventory_checker import *
+import os
 
 if __name__=="__main__":
+	print "Reprogramming board (if an arduino window apears then this needs to be done manualy)"
+	os.system("arduino --upload ruggeduino-fw.ino")
+
+
 	print "testing"
 	if runtest():
 		print "All tests completed successfully"
