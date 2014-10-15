@@ -1,7 +1,7 @@
 #!/bin/python
 import serial
 import time
-ser=serial.Serial()	#create dummy serial port
+ser=None
 
 def setpin(mode,pinid):
 	if mode=="high":	
@@ -135,7 +135,6 @@ def runtest(port='/dev/ttyACM0'):
 	global ser
 
 	ser=serial.Serial(port, 115200, timeout=1, xonxoff=0,rtscts=0)
-	ser.open()
 
 	time.sleep(2)				#wait for boot
 
