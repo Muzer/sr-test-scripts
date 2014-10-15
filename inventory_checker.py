@@ -62,4 +62,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     device = get_device(args.device_path)
-    test_device(args.device, args.inventory_directory, args.condition)
+    test_device(device, args.inventory_directory, args.condition)
