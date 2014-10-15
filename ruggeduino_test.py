@@ -5,6 +5,7 @@ from ruggeduino_test_lib import *
 from inventory_checker import *
 import os
 import time
+import sys
 
 if __name__=="__main__":
 	device_path = sys.argv[1]
@@ -12,12 +13,13 @@ if __name__=="__main__":
 	fw_directory = sys.argv[3]
 	print "Reprogramming board (trying until successful)"
 	while os.system("avrdude -v -p atmega328p -c arduino -P " + device_path + " -D -U flash:w:" + os.path.join(fw_directory, "ruggeduino.hex") + ":i") != 0:
-            time.sleep(0.5)
-            print "Retrying..."
+	    time.sleep(0.5)
+	    print "Retrying..."
 
+	sys.beep()
 	print "Press enter to test"
-        raw_input()
-        print "testing"
+	raw_input()
+	print "testing"
 	if runtest(device_path):
 		print "All tests completed successfully"
 		condition = "working" 
