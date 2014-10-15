@@ -1,17 +1,19 @@
 #!/usr/bin/env python2
-# usage rugiduino-test /dev/ttyACM0 ../inventory
+# usage rugiduino-test /dev/ttyACM0 ../inventory ../boards/ruggeduino-fw
 
 from ruggeduino_test_lib import *
 from inventory_checker import *
 import os
 
 if __name__=="__main__":
-	print "Reprogramming board (if an arduino window apears then this needs to be done manualy)"
-	os.system("arduino --upload ruggeduino-fw.ino")
-
+	device_path = sys.argv[1]
+	inventory_directory = sys.argv[2]
+	fw_directory = sys.argv[3]
+	print "Reprogramming board"
+	os.system("avrdude -v -p atmega328p -c arduino -P " + device_path + " -D -U flash:w:" + os.path.join(fw_directory, "ruggeduino.hex") + ":i")
 
 	print "testing"
-	if runtest():
+	if runtest(device_path):
 		print "All tests completed successfully"
 		condition = "working" 
 	else:
@@ -19,7 +21,5 @@ if __name__=="__main__":
 		condition = "broken"
 	print "inventorizing"
 
-	device_path = sys.argv[1]
-	inventory_directory = sys.argv[2]
 	device = get_device(device_path)
 	test_device(device, inventory_directory, condition)
