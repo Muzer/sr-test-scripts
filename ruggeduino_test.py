@@ -16,8 +16,7 @@ if __name__=="__main__":
 	    time.sleep(0.5)
 	    print "Retrying..."
 
-	sys.beep()
-	print "Press enter to test"
+	print "\aPress enter to test"
 	raw_input()
 	print "testing"
 	if runtest(device_path):

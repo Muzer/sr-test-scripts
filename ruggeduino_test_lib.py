@@ -153,8 +153,7 @@ def runtest(port='/dev/ttyACM0'):
 		if not testpin(pin):		#test that pin
 			tsetstatus=False	#fail the test
 
-	sys.beep()
-	raw_input("Switch to Anolouge test shield and press enter to continue.")
+	raw_input("\aSwitch to Anolouge test shield and press enter to continue.")
 
 	for pin in analoguepins:		#for each anolouge pin
 		value = analoguereadpin(analoguepins[pinmap[pin]])
