@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # usage rugiduino-test /dev/ttyACM0 ../inventory
 
-from rugeduino_test_lib import *
+from ruggeduino_test_lib import *
 from inventory_checker import *
 import os
 
