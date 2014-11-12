@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# usage rugiduino-test /dev/ttyACM0 ../inventory ../boards/ruggeduino-fw
+# usage ruggeduino-test /dev/ttyACM0 ../inventory ../boards/ruggeduino-fw
 
 from ruggeduino_test_lib import *
 from inventory_checker import *
