@@ -143,27 +143,28 @@ def run_test(port='/dev/ttyACM0'):
     # Wait for the Ruggeduino to boot
     time.sleep(2)
 
-    ser.write("v")                #check version
+    # Check version
+    ser.write("v")
     ser.flush()
     version = ser.readline()
-    if (version[0:8] == "SRduino:1"):    #check version
-        print "Unexpected Ruggeduino version received: "+version    #error on incorrect version
+    if (version[0:8] == "SRduino:1"):
+        print "Unexpected Ruggeduino version received:", version
         return False
 
     for pin in PIN_MAPPINGS:
-        set_pin_mode("input_pullup", pin)    #set pin to input pullup
+        set_pin_mode("input_pullup", pin)
 
     for pin in PIN_MAPPINGS:
         if not test_pin(pin):
-            test_passed = False    #fail the test
+            test_passed = False
 
     raw_input("\aSwitch to analogue test shield and press enter to continue.")
 
-    for pin in ANALOGUE_PIN_MAPPINGS:        #for each analogue pin
+    for pin in ANALOGUE_PIN_MAPPINGS:
         value = analogue_read_pin(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin]])
         if value < 670 or value > 680:
             print "Error analogue pin ("+str(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin]])+") did not read 3.3v value read:"+str(analogue_read_pin(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin]]))
-            test_passed = False    #test has failed
+            test_passed = False
 
     ser.close()
     return test_passed
