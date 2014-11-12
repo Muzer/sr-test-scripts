@@ -3,6 +3,7 @@ import serial
 import time
 ser = None
 
+
 def setpin(mode, pinid):
     if mode == "high":
         ser.write("h"+chr(ord('a')+pinid))    #set pin high
@@ -18,6 +19,7 @@ def setpin(mode, pinid):
     ser.flush()                #flush the serial port
     ser.readline()                #clear any return from the Ruggeduino
 
+
 '''
  reads the value on a pin
 
@@ -28,6 +30,7 @@ def readpin(pinid):
     ser.write("r"+chr(ord('a')+pinid))    #send read command
     ser.flush()                #flush serial
     return ser.readline()            #read output
+
 
 '''
  reads the analogue on a pin
@@ -113,6 +116,7 @@ def testpin(pinid):
     setpin("input_pullup", pinmap[pinid])    #return testpin pair to normal
     return teststatus
 
+
 '''
 Checks all other pins to see if they are pulled high
 
@@ -125,6 +129,7 @@ def checkremainingpins(pinid):
                 print "Error while testing pin: "+str(pinid)+" other pin("+str(pin)+") unexpectedly read low"
                 return False
     return(True)
+
 
 '''
 Tests an entire Ruggeduino
@@ -147,7 +152,6 @@ def runtest(port='/dev/ttyACM0'):
     for pin in pinmap:            #for every pin
         setpin("input_pullup", pin)    #set pin to input pullup
 
-
     for pin in pinmap:            # for every pin
         if not testpin(pin):        #test that pin
             tsetstatus = False    #fail the test
@@ -160,11 +164,8 @@ def runtest(port='/dev/ttyACM0'):
             print "Error analogue pin ("+str(analoguepins[pinmap[pin]])+") did not read 3.3v value read:"+str(analoguereadpin(analoguepins[pinmap[pin]]))
             teststatus = False    #test has failed
 
-
-
     ser.close()                #close serial port
     return teststatus
-
 
 
 if __name__ == "__main__":
