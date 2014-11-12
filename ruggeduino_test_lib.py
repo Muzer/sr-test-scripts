@@ -151,7 +151,7 @@ def runtest(port='/dev/ttyACM0'):
 
 	for pin in pinmap:			# for every pin
 		if not testpin(pin):		#test that pin
-			tsetstatus=False	#fail the test
+			teststatus=False	#fail the test
 
 	raw_input("\aSwitch to Anolouge test shield and press enter to continue.")
 
