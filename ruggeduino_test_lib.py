@@ -1,19 +1,19 @@
 #!/bin/python
 import serial
 import time
-ser=None
+ser = None
 
-def setpin(mode,pinid):
-    if mode=="high":
+def setpin(mode, pinid):
+    if mode == "high":
         ser.write("h"+chr(ord('a')+pinid))    #set pin high
-    if mode=="low":
+    if mode == "low":
         ser.write("l"+chr(ord('a')+pinid))    #set pin low
 
-    if mode=="input":
+    if mode == "input":
         ser.write("i"+chr(ord('a')+pinid))    #set as input
-    if mode=="output":
+    if mode == "output":
         ser.write("o"+chr(ord('a')+pinid))    #set as output
-    if mode=="input_pullup":
+    if mode == "input_pullup":
         ser.write("p"+chr(ord('a')+pinid))    #set as input_pullup
     ser.flush()                #flush the serial port
     ser.readline()                #clear any return from the rugiduino
@@ -45,35 +45,34 @@ def analoguereadpin(pinid):
 Mapping of pin pairs on test harness
 '''
 pinmap = {
-2:8,
-3:9,
-4:10,
-5:11,
-6:12,
-7:13,
-8:2,
-9:3,
-10:4,
-11:5,
-12:6,
-13:7,
+    2: 8,
+    3: 9,
+    4: 10,
+    5: 11,
+    6: 12,
+    7: 13,
+    8: 2,
+    9: 3,
+    10: 4,
+    11: 5,
+    12: 6,
+    13: 7,
 
-14:17,
-15:18,
-16:19,
-17:14,
-18:15,
-19:16,
+    14: 17,
+    15: 18,
+    16: 19,
+    17: 14,
+    18: 15,
+    19: 16,
 }
 
 analoguepins = {
-
-14:0,
-15:1,
-16:2,
-17:3,
-18:4,
-19:5,
+    14: 0,
+    15: 1,
+    16: 2,
+    17: 3,
+    18: 4,
+    19: 5,
 }
 
 '''
@@ -83,35 +82,35 @@ analoguepins = {
  * /return True if all is ok otherwise False
 '''
 def testpin(pinid):
-    teststatus=True            #set test as ok untill it fails
+    teststatus = True            #set test as ok untill it fails
 
     #setup pins
-    setpin("output",pinid);        #set pin under test as output
-    setpin("high",pinid);        #and set pin high
-    setpin("input",pinmap[pinid]);    #set pin pair as input
+    setpin("output", pinid);        #set pin under test as output
+    setpin("high", pinid);        #and set pin high
+    setpin("input", pinmap[pinid]);    #set pin pair as input
 
-    if (readpin(pinmap[pinid])[0]!="h"):    #read target pin
+    if (readpin(pinmap[pinid])[0] != "h"):    #read target pin
         print "Error While testing pin: "+str(pinid)+" Pin pair read low when expecting high (stuck at low error)"    #report error
-        teststatus=False        #fail test
+        teststatus = False        #fail test
     if (not checkremainingpins(pinid)):    #look for efects on other pins
-        teststatus=False        #fail test
+        teststatus = False        #fail test
     if pinmap[pinid] in analoguepins:    #if anolouge pin
         if analoguereadpin(analoguepins[pinmap[pinid]]) < 940:
             print "Error analogue pin ("+str(analoguepins[pinmap[pinid]])+") did not read max value read:"+str(analoguereadpin(analoguepins[pinmap[pinid]]))
 
-    setpin("low",pinid);        #set pin low
+    setpin("low", pinid);        #set pin low
 
-    if (readpin(pinmap[pinid])[0]!="l"):    #read target pin
+    if (readpin(pinmap[pinid])[0] != "l"):    #read target pin
         print "Error While testing pin: "+str(pinid)+" Pin pair read high when expecting low (stuck at high error)"    #report error
-        teststatus=False        #fail test
+        teststatus = False        #fail test
     if (not checkremainingpins(pinid)):    #look for efects on other pins
-        teststatus=False        #fail test
+        teststatus = False        #fail test
     if pinmap[pinid] in analoguepins:    #if anolouge pin
         if analoguereadpin(analoguepins[pinmap[pinid]]) > 10:
             print "Error analogue pin ("+str(analoguepins[pinmap[pinid]])+") did not read min value read:"+str(analoguereadpin(analoguepins[pinmap[pinid]]))
 
-    setpin("input_pullup",pinid)        #return testpin to normal
-    setpin("input_pullup",pinmap[pinid])    #return testpin pair to normal
+    setpin("input_pullup", pinid)        #return testpin to normal
+    setpin("input_pullup", pinmap[pinid])    #return testpin pair to normal
     return teststatus
 
 '''
@@ -131,27 +130,27 @@ def checkremainingpins(pinid):
 Tests an entire rugeduino
 '''
 def runtest(port='/dev/ttyACM0'):
-    teststatus=True                #set test as ok untill it fails
+    teststatus = True                #set test as ok untill it fails
     global ser
 
-    ser=serial.Serial(port, 115200, timeout=1, xonxoff=0,rtscts=0)
+    ser = serial.Serial(port, 115200, timeout=1, xonxoff=0, rtscts=0)
 
     time.sleep(2)                #wait for boot
 
     ser.write("v");                #check version
     ser.flush();                #flush serial
     version = ser.readline()
-    if (version[0:8]=="SRduino:1"):    #check version
+    if (version[0:8] == "SRduino:1"):    #check version
         print "Unexpected rugiduino version recieved: "+version    #error on incorect version
         return False
 
     for pin in pinmap:            #for every pin
-        setpin("input_pullup",pin)    #set pin to input pullup
+        setpin("input_pullup", pin)    #set pin to input pullup
 
 
     for pin in pinmap:            # for every pin
         if not testpin(pin):        #test that pin
-            tsetstatus=False    #fail the test
+            tsetstatus = False    #fail the test
 
     raw_input("\aSwitch to Anolouge test shield and press enter to continue.")
 
@@ -159,7 +158,7 @@ def runtest(port='/dev/ttyACM0'):
         value = analoguereadpin(analoguepins[pinmap[pin]])
         if value < 670 or value > 680:
             print "Error analogue pin ("+str(analoguepins[pinmap[pin]])+") did not read 3.3v value read:"+str(analoguereadpin(analoguepins[pinmap[pin]]))
-            teststatus=False    #test has failed
+            teststatus = False    #test has failed
 
 
 
@@ -168,7 +167,7 @@ def runtest(port='/dev/ttyACM0'):
 
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     if runtest():
         print "All tests completed successfully"
     else:

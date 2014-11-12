@@ -7,7 +7,7 @@ import os
 import time
 import sys
 
-if __name__=="__main__":
+if __name__ == "__main__":
     device_path = sys.argv[1]
     inventory_directory = sys.argv[2]
     fw_directory = sys.argv[3]
@@ -21,7 +21,7 @@ if __name__=="__main__":
     print "testing"
     if runtest(device_path):
         print "All tests completed successfully"
-        condition = "working" 
+        condition = "working"
     else:
         print "broken board"
         condition = "broken"
