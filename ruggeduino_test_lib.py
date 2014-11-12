@@ -71,6 +71,7 @@ ANALOGUE_PIN_MAPPINGS = {
     19: 5,
 }
 
+
 def test_pin(pin_id):
     """
     Performs a test sequence on a pin
@@ -79,41 +80,47 @@ def test_pin(pin_id):
     /return True if all is OK otherwise False
     """
     test_passed = True
+    partner_pin_id = PIN_MAPPINGS[pin_id]
 
     # Set up pins
-    set_pin_mode("output", pin_id)         # set pin under test as output
-    set_pin_mode("high", pin_id)           # and set pin high
-    set_pin_mode("input", PIN_MAPPINGS[pin_id])  # set pin pair as input
+    set_pin_mode("output", pin_id)
+    set_pin_mode("high", pin_id)
+    set_pin_mode("input", partner_pin_id)
 
-    if (read_pin(PIN_MAPPINGS[pin_id])[0] != "h"):    #read target pin
-        print "Error While testing pin: "+str(pin_id)+" Pin pair read low when expecting high (stuck at low error)"    #report error
-        test_passed = False        #fail test
-    if (not check_remaining_pins(pin_id)):    #look for effects on other pins
-        test_passed = False        #fail test
-    if PIN_MAPPINGS[pin_id] in ANALOGUE_PIN_MAPPINGS:    #if analogue pin
-        if analogue_read_pin(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin_id]]) < 940:
-            print "Error analogue pin ("+str(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin_id]])+") did not read max value read:"+str(analogue_read_pin(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin_id]]))
+    if read_pin(partner_pin_id)[0] != "h":
+        print "Error while testing pin", pin_id, ": Pin pair read low when expecting high (stuck at low error)"
+        test_passed = False
 
-    set_pin_mode("low", pin_id);
+    if not check_remaining_pins(pin_id):
+        test_passed = False
 
-    if (read_pin(PIN_MAPPINGS[pin_id])[0] != "l"):    #read target pin
-        print "Error While testing pin: "+str(pin_id)+" Pin pair read high when expecting low (stuck at high error)"    #report error
-        test_passed = False        #fail test
-    if (not check_remaining_pins(pin_id)):    #look for effects on other pins
-        test_passed = False        #fail test
-    if PIN_MAPPINGS[pin_id] in ANALOGUE_PIN_MAPPINGS:    #if analogue pin
-        if analogue_read_pin(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin_id]]) > 10:
-            print "Error analogue pin ("+str(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin_id]])+") did not read min value read:"+str(analogue_read_pin(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin_id]]))
+    if partner_pin_id in ANALOGUE_PIN_MAPPINGS:
+        if analogue_read_pin(ANALOGUE_PIN_MAPPINGS[partner_pin_id]) < 940:
+            print "Error: analogue pin", ANALOGUE_PIN_MAPPINGS[partner_pin_id], "did not read max value read:", analogue_read_pin(ANALOGUE_PIN_MAPPINGS[partner_pin_id])
+
+    set_pin_mode("low", pin_id)
+
+    if read_pin(partner_pin_id)[0] != "l":
+        print "Error while testing pin", pin_id, ": Pin pair read high when expecting low (stuck at high error)"
+        test_passed = False
+
+    if not check_remaining_pins(pin_id):
+        test_passed = False
+
+    if partner_pin_id in ANALOGUE_PIN_MAPPINGS:
+        if analogue_read_pin(ANALOGUE_PIN_MAPPINGS[partner_pin_id]) > 10:
+            print "Error: analogue pin", ANALOGUE_PIN_MAPPINGS[partner_pin_id], "did not read min value read:", analogue_read_pin(ANALOGUE_PIN_MAPPINGS[partner_pin_id])
 
     # Return test pins to normal
     set_pin_mode("input_pullup", pin_id)
-    set_pin_mode("input_pullup", PIN_MAPPINGS[pin_id])
+    set_pin_mode("input_pullup", partner_pin_id)
     return test_passed
 
 
 def check_remaining_pins(pin_id):
     """
-    Checks all other pins to see if they are pulled high
+    Checks all pins except the one with the given ID to see if they are pulled
+    high.
 
     /return True if all is OK otherwise False
     """
