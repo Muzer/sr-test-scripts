@@ -26,16 +26,16 @@ def set_pin_mode(mode, pin_id):
 
 def read_pin(pin_id):
     """Returns the value on a pin."""
-    ser.write("r"+chr(ord('a')+pin_id))    #send read command
+    ser.write("r"+chr(ord('a')+pin_id))
     ser.flush()
-    return ser.readline()            #read output
+    return ser.readline()
 
 
 def analogue_read_pin(pin_id):
     """Reads the analogue value on a pin."""
-    ser.write("a"+chr(ord('a')+pin_id))    #send read command
+    ser.write("a"+chr(ord('a')+pin_id))
     ser.flush()
-    return int(ser.readline())        #read output
+    return int(ser.readline())
 
 
 # Mapping of pins to their partners on the test harness
