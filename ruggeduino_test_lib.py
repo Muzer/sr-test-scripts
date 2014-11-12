@@ -4,18 +4,24 @@ import time
 ser = None
 
 
-def set_pin_mode(mode, pin_id):
-    if mode == "high":
-        ser.write("h"+chr(ord('a')+pin_id))    #set pin high
-    if mode == "low":
-        ser.write("l"+chr(ord('a')+pin_id))    #set pin low
+PIN_MODE_FLAGS = {
+    'high': 'h',
+    'low': 'l',
 
-    if mode == "input":
-        ser.write("i"+chr(ord('a')+pin_id))    #set as input
-    if mode == "output":
-        ser.write("o"+chr(ord('a')+pin_id))    #set as output
-    if mode == "input_pullup":
-        ser.write("p"+chr(ord('a')+pin_id))    #set as input_pullup
+    'input': 'i',
+    'output': 'o',
+    'input_pullup': 'p',
+}
+
+
+def set_pin_mode(mode, pin_id):
+    """
+    Sets a pin's value or mode, according to the `mode` parameter.
+    """
+    pin_mode_char = PIN_MODE_FLAGS[mode]
+    pin_id_char = chr(ord('a')+pin_id)
+
+    ser.write(pin_mode_char + pin_id_char)
     ser.flush()
     ser.readline()   # clear any return from the Ruggeduino
 
