@@ -125,11 +125,12 @@ def check_remaining_pins(pin_id):
     /return True if all is OK otherwise False
     """
     for pin in PIN_MAPPINGS:
-        if (pin != pin_id and pin != PIN_MAPPINGS[pin_id]):    #exclude pins under test
-            if (read_pin(pin)[0] == "l"):
-                print "Error while testing pin: "+str(pin_id)+" other pin("+str(pin)+") unexpectedly read low"
+        if pin != pin_id and pin != PIN_MAPPINGS[pin_id]:
+            if read_pin(pin)[0] == "l":
+                print "Error: while testing pin", pin_id, "another pin", pin, "unexpectedly read low"
                 return False
-    return(True)
+
+    return True
 
 
 def run_test(port='/dev/ttyACM0'):
