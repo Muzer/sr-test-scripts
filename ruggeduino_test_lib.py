@@ -15,9 +15,7 @@ PIN_MODE_FLAGS = {
 
 
 def set_pin_mode(mode, pin_id):
-    """
-    Sets a pin's value or mode, according to the `mode` parameter.
-    """
+    """Sets a pin's value or mode, according to the `mode` parameter."""
     pin_mode_char = PIN_MODE_FLAGS[mode]
     pin_id_char = chr(ord('a')+pin_id)
 
@@ -26,31 +24,21 @@ def set_pin_mode(mode, pin_id):
     ser.readline()   # clear any return from the Ruggeduino
 
 
-'''
- reads the value on a pin
-
- \param pin_id pin to read
-'''
 def read_pin(pin_id):
+    """Returns the value on a pin."""
     ser.write("r"+chr(ord('a')+pin_id))    #send read command
     ser.flush()
     return ser.readline()            #read output
 
 
-'''
- reads the analogue on a pin
-
- \param pin_id pin to read
-'''
 def analogue_read_pin(pin_id):
+    """Reads the analogue value on a pin."""
     ser.write("a"+chr(ord('a')+pin_id))    #send read command
     ser.flush()
     return int(ser.readline())        #read output
 
 
-'''
-Mapping of pin pairs on test harness
-'''
+# Mapping of pins to their partners on the test harness
 PIN_MAPPINGS = {
     2: 8,
     3: 9,
@@ -83,13 +71,13 @@ ANALOGUE_PIN_MAPPINGS = {
     19: 5,
 }
 
-'''
- * Performs a test sequence on a pin
- *
- * /param pin_id pin id to test
- * /return True if all is OK otherwise False
-'''
 def test_pin(pin_id):
+    """
+    Performs a test sequence on a pin
+
+    /param pin_id pin id to test
+    /return True if all is OK otherwise False
+    """
     test_passed = True
 
     # Set up pins
@@ -123,12 +111,12 @@ def test_pin(pin_id):
     return test_passed
 
 
-'''
-Checks all other pins to see if they are pulled high
-
-/return True if all is OK otherwise False
-'''
 def check_remaining_pins(pin_id):
+    """
+    Checks all other pins to see if they are pulled high
+
+    /return True if all is OK otherwise False
+    """
     for pin in PIN_MAPPINGS:
         if (pin != pin_id and pin != PIN_MAPPINGS[pin_id]):    #exclude pins under test
             if (read_pin(pin)[0] == "l"):
@@ -137,10 +125,8 @@ def check_remaining_pins(pin_id):
     return(True)
 
 
-'''
-Tests an entire Ruggeduino
-'''
 def run_test(port='/dev/ttyACM0'):
+    """Tests an entire Ruggeduino."""
     test_passed = True
     global ser
 
