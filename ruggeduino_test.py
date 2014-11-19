@@ -10,9 +10,11 @@ import sys
 if __name__ == "__main__":
     device_path = sys.argv[1]
     inventory_directory = sys.argv[2]
-    fw_directory = sys.argv[3]
+    fw_path = os.path.join(sys.argv[3], "ruggeduino.hex")
     print "Reprogramming board (trying until successful)"
-    while os.system("avrdude -v -p atmega328p -c arduino -P " + device_path + " -D -U flash:w:" + os.path.join(fw_directory, "ruggeduino.hex") + ":i") != 0:
+    command = ("avrdude -v -p atmega328p -c arduino -P {device_path} -D -U flash:w:{fw_path}:i"
+               .format(device_path=device_path, fw_path=fw_path))
+    while os.system(command) != 0:
         time.sleep(0.5)
         print "Retrying..."
 
@@ -25,7 +27,7 @@ if __name__ == "__main__":
     else:
         print "broken board"
         condition = "broken"
-    print "inventorizing"
 
+    print "inventorizing"
     device = get_device(device_path)
     test_device(device, inventory_directory, condition)
