@@ -71,6 +71,7 @@ ANALOGUE_PIN_MAPPINGS = {
     19: 5,
 }
 
+ANALOGUE_ERROR_MESSAGE = "Error: analogue pin {pin_id} did not read {expected}. Value read: {actual}"
 
 def test_pin(pin_id):
     """
@@ -79,6 +80,7 @@ def test_pin(pin_id):
     /param pin_id pin id to test
     /return True if all is OK otherwise False
     """
+
     test_passed = True
     partner_pin_id = PIN_MAPPINGS[pin_id]
 
@@ -95,8 +97,11 @@ def test_pin(pin_id):
         test_passed = False
 
     if partner_pin_id in ANALOGUE_PIN_MAPPINGS:
-        if analogue_read_pin(ANALOGUE_PIN_MAPPINGS[partner_pin_id]) < 940:
-            print "Error: analogue pin", ANALOGUE_PIN_MAPPINGS[partner_pin_id], "did not read max value read:", analogue_read_pin(ANALOGUE_PIN_MAPPINGS[partner_pin_id])
+        analogue_partner_id = ANALOGUE_PIN_MAPPINGS[partner_pin_id]
+        analogue_value = analogue_read_pin(analogue_partner_id)
+        if analogue_value < 940:
+            print ANALOGUE_ERROR_MESSAGE.format(pin_id=analogue_partner_id,
+                    expected="max", actual=analogue_value)
 
     set_pin_mode("low", pin_id)
 
@@ -108,8 +113,11 @@ def test_pin(pin_id):
         test_passed = False
 
     if partner_pin_id in ANALOGUE_PIN_MAPPINGS:
-        if analogue_read_pin(ANALOGUE_PIN_MAPPINGS[partner_pin_id]) > 10:
-            print "Error: analogue pin", ANALOGUE_PIN_MAPPINGS[partner_pin_id], "did not read min value read:", analogue_read_pin(ANALOGUE_PIN_MAPPINGS[partner_pin_id])
+        analogue_partner_id = ANALOGUE_PIN_MAPPINGS[partner_pin_id]
+        analogue_value = analogue_read_pin(analogue_partner_id)
+        if analogue_value > 10:
+            print ANALOGUE_ERROR_MESSAGE.format(pin_id=analogue_partner_id,
+                    expected="min", actual=analogue_value)
 
     # Return test pins to normal
     set_pin_mode("input_pullup", pin_id)
@@ -161,9 +169,11 @@ def run_test(port='/dev/ttyACM0'):
     raw_input("\aSwitch to analogue test shield and press enter to continue.")
 
     for pin in ANALOGUE_PIN_MAPPINGS:
-        value = analogue_read_pin(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin]])
+        analogue_pin_id = ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin]]
+        value = analogue_read_pin(analogue_pin_id)
         if value < 670 or value > 680:
-            print "Error analogue pin ("+str(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin]])+") did not read 3.3v value read:"+str(analogue_read_pin(ANALOGUE_PIN_MAPPINGS[PIN_MAPPINGS[pin]]))
+            print ANALOGUE_ERROR_MESSAGE.format(pin_id=analogue_pin_id,
+                    expected="3.3v", actual=value)
             test_passed = False
 
     ser.close()
