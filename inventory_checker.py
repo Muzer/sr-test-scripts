@@ -9,16 +9,12 @@ import argparse
 import pyudev
 import yaml
 
-sys.path.append(os.getenv("HOME") + "/.sr/tools/python")
-sys.path.append(os.getenv("HOME") + "/.sr/tools/python/inventory")
-
-import inventory.query
+import sr.tools.inventory.query
 from yaml_replace import *
 
 def get_device(path):
     context = pyudev.Context()
     return pyudev.Device.from_device_file(context, path)
-
 
 def update_device(new_serial, new_condition, inv):
     while True:
