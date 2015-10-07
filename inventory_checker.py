@@ -1,25 +1,24 @@
 #!/usr/bin/env python2
 from __future__ import print_function
 
-import re
-import os
-import sys
 import argparse
 
 import pyudev
-import yaml
 
 import sr.tools.inventory.query
 from yaml_replace import *
+
 
 def get_device(path):
     context = pyudev.Context()
     return pyudev.Device.from_device_file(context, path)
 
+
 def update_device(new_serial, new_condition, inv):
     while True:
         code = raw_input("Asset code: ")
-        result = inventory.query.query("code:{}".format(code), inv=inv.root)
+        result = sr.tools.inventory.query.query("code:{}".format(code),
+                                                inv=inv.root)
         if result:
             item = result[0]
             replace_serial(item.path, new_serial)
@@ -33,8 +32,8 @@ def test_device(device, inv_directory, condition):
     print("=" * 80)
     serial_number = device["ID_SERIAL_SHORT"]
     inv = inventory.Inventory(inv_directory)
-    result = inventory.query.query("serial:{}".format(serial_number),
-                                   inv=inv.root)
+    result = sr.tools.inventory.query.query("serial:{}".format(serial_number),
+                                            inv=inv.root)
     if result:
         item = result[0]
         print(item.description)
