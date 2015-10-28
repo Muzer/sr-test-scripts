@@ -28,4 +28,4 @@ if __name__=="__main__":
 	print "inventorizing"
 
 	device = get_device(device_path)
-	test_device(device, inventory_directory, condition)
+	device_to_condition(device, inventory_directory, condition)

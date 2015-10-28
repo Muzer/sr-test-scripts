@@ -27,24 +27,25 @@ def update_device(new_serial, new_condition, inv):
         else:
             print("COULD NOT FIND THE DEVICE!")
 
+def update_condition(item, inv_directory, condition):
+    print(item.description)
+    print("Asset code: {item.code}".format(item=item))
+    print()
+    yes = raw_input("Is this correct? [Y/n] ")
+    if yes.lower() == "n":
+        replace_serial(item.path, "")
+        update_device('"' + serial_number + '"', condition, inv)
+    else:
+        replace_condition(item.path, condition)
 
-def test_device(device, inv_directory, condition):
+def device_to_condition(device, inv_directory, condition):
     print("=" * 80)
     serial_number = device["ID_SERIAL_SHORT"]
     inv = inventory.Inventory(inv_directory)
     result = sr.tools.inventory.query.query("serial:{}".format(serial_number),
                                             inv=inv.root)
     if result:
-        item = result[0]
-        print(item.description)
-        print("Asset code: {item.code}".format(item=item))
-        print()
-        yes = raw_input("Is this correct? [Y/n] ")
-        if yes.lower() == "n":
-            replace_serial(item.path, "")
-            update_device('"' + serial_number + '"', condition, inv)
-        else:
-            replace_condition(item.path, condition)
+        update_condition(result, inv_directory, condition)
     else:
         update_device(serial_number, condition, inv)
 
@@ -57,4 +58,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     device = get_device(args.device_path)
-    test_device(device, args.inventory_directory, args.condition)
+    device_to_condition(device, args.inventory_directory, args.condition)

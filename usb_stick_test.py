@@ -57,7 +57,7 @@ def run_tests(inventory_dir):
         working = test_device(usb_stick)
         condition = "working" if working else "not working"
         print("{} is {}.".format(usb_stick["ID_MODEL"], condition))
-        inventory_checker.test_device(usb_stick, inventory_dir, condition)
+        inventory_checker.device_to_condition(usb_stick, inventory_dir, condition)
 
 
 if __name__ == "__main__":
