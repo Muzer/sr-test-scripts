@@ -5,7 +5,7 @@ import argparse
 
 import pyudev
 
-import sr.tools.inventory.query
+import sr.tools.inventory
 from yaml_replace import *
 
 
@@ -17,8 +17,7 @@ def get_device(path):
 def update_device(new_serial, new_condition, inv):
     while True:
         code = raw_input("Asset code: ")
-        result = sr.tools.inventory.query.query("code:{}".format(code),
-                                                inv=inv.root)
+        result = inv.query("code:{}".format(code))
         if result:
             item = result[0]
             replace_serial(item.path, new_serial)
@@ -41,9 +40,8 @@ def update_condition(item, inv_directory, condition):
 def device_to_condition(device, inv_directory, condition):
     print("=" * 80)
     serial_number = device["ID_SERIAL_SHORT"]
-    inv = inventory.Inventory(inv_directory)
-    result = sr.tools.inventory.query.query("serial:{}".format(serial_number),
-                                            inv=inv.root)
+    inv = sr.tools.inventory.Inventory(inv_directory)
+    result = inv.query("serial:{}".format(serial_number))
     if result:
         update_condition(result, inv_directory, condition)
     else:
