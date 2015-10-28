@@ -157,7 +157,7 @@ def runtest(port='/dev/ttyACM0'):
 
 	for pin in analoguepins:		#for each anolouge pin
 		value = analoguereadpin(analoguepins[pinmap[pin]])
-		if value < 670 or value > 680:
+		if value < 665 or value > 685:
 			print "Error analogue pin ("+str(analoguepins[pinmap[pin]])+") did not read 3.3v value read:"+str(analoguereadpin(analoguepins[pinmap[pin]]))
 			teststatus=False	#test has failed
 
