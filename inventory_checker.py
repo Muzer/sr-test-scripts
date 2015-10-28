@@ -43,7 +43,11 @@ def device_to_condition(device, inv_directory, condition):
     inv = sr.tools.inventory.inventory.Inventory(inv_directory)
     result = inv.query("serial:{}".format(serial_number))
     if result:
-        update_condition(result, inv_directory, condition)
+        if len(result) != 1:
+            print("More than one device has this serial. Cowardly refusing to "
+                    + "continue. Please fix manually.")
+        else:
+            update_condition(result[0], inv_directory, condition)
     else:
         update_device(serial_number, condition, inv)
 
