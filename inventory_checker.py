@@ -40,7 +40,7 @@ def update_condition(item, inv_directory, condition):
 def device_to_condition(device, inv_directory, condition):
     print("=" * 80)
     serial_number = device["ID_SERIAL_SHORT"]
-    inv = sr.tools.inventory.Inventory(inv_directory)
+    inv = sr.tools.inventory.inventory.Inventory(inv_directory)
     result = inv.query("serial:{}".format(serial_number))
     if result:
         update_condition(result, inv_directory, condition)
