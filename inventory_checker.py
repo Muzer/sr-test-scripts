@@ -5,7 +5,7 @@ import argparse
 
 import pyudev
 
-import sr.tools.inventory
+import sr.tools.inventory.inventory
 from yaml_replace import *
 
 
